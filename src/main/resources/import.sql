@@ -1,0 +1,3 @@
+-- insert into roles(name) values ('ROLE_ADMIN');
+-- insert into roles(name) values ('ROLE_DOC');
+-- insert into roles(name) values ('ROLE_PAT');
