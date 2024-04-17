@@ -1,15 +1,15 @@
 package com.ivan.proyect.medicalcenter.app.medicalcenterapp.persistence.entities;
 
+import com.ivan.proyect.medicalcenter.app.medicalcenterapp.persistence.util.Status;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
-
 
 @MappedSuperclass
-@Getter @Setter
+
 public class Person {   
 
     @NotBlank
@@ -24,8 +24,8 @@ public class Person {
     @NotBlank
     @Size(min=10, max = 10)
     private String phone;
-    
-
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     public Person() {
     }
@@ -34,6 +34,47 @@ public class Person {
         this.name = name;
         this.lastname = lastname;
         this.dni = dni;
-
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    public String getDni() {
+        return dni;
+    }
+
+    public void setDni(String dni) {
+        this.dni = dni;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    
 }

@@ -4,7 +4,11 @@ package com.ivan.proyect.medicalcenter.app.medicalcenterapp.services.Impl;
 import java.util.List;
 import java.util.Optional;
 
+import com.ivan.proyect.medicalcenter.app.medicalcenterapp.exception.ObjectNotFoundException;
+import com.ivan.proyect.medicalcenter.app.medicalcenterapp.persistence.util.Status;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,12 +45,18 @@ public class DayServiceImpl implements DayService{
         return (List<Day>) dayRepository.findByDoctorId(id);
     }
 
-  
+    @Override
+    public Page<Day> findAll(Pageable pageable) {
+        return dayRepository.findAll(pageable);
+    }
+
+
     @SuppressWarnings("null")
     @Override
     @Transactional
     public Day save(Day day) {
         determinate(day);
+        day.setStatus(Status.ENABLED);
         return dayRepository.save(day);
     }
 
@@ -102,6 +112,12 @@ public class DayServiceImpl implements DayService{
         return optionalDay;
     }
 
+    @Override
+    public Day disableById(Long id) {
+        Day dayDb = dayRepository.findById(id).orElseThrow(()->new ObjectNotFoundException("Day not found with id " + id));
+        dayDb.setStatus(Status.DISABLED);
+        return dayRepository.save(dayDb);
+    }
 
     @Transactional
     public Day determinate(Day day) {
@@ -116,11 +132,13 @@ public class DayServiceImpl implements DayService{
             if(flag){
                 newSchedule.setHour(start + ":" + "00");
                 day.addSchedule(newSchedule);
+                newSchedule.setStatus(Status.ENABLED);
                 scheduleRepository.save(newSchedule);
                 flag = false;
             }else{
                 newSchedule.setHour(start + ":" + "30");
                 day.addSchedule(newSchedule);
+                newSchedule.setStatus(Status.ENABLED);
                 scheduleRepository.save(newSchedule);
                 flag = true;
                 start++;

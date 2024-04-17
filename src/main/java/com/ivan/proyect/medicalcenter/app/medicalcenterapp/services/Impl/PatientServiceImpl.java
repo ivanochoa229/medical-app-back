@@ -5,15 +5,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.ivan.proyect.medicalcenter.app.medicalcenterapp.persistence.entities.*;
+import com.ivan.proyect.medicalcenter.app.medicalcenterapp.persistence.util.Status;
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ivan.proyect.medicalcenter.app.medicalcenterapp.persistence.dto.PatientDto;
-import com.ivan.proyect.medicalcenter.app.medicalcenterapp.persistence.entities.Address;
-import com.ivan.proyect.medicalcenter.app.medicalcenterapp.persistence.entities.HealthInsurence;
-import com.ivan.proyect.medicalcenter.app.medicalcenterapp.persistence.entities.Patient;
 import com.ivan.proyect.medicalcenter.app.medicalcenterapp.persistence.entities.security.User;
 import com.ivan.proyect.medicalcenter.app.medicalcenterapp.persistence.mapper.PatientMapperDto;
 import com.ivan.proyect.medicalcenter.app.medicalcenterapp.persistence.request.PatientRequest;
@@ -60,10 +58,7 @@ public class PatientServiceImpl implements PatientService {
     @Transactional
     @Override
     public PatientDto save(@Valid Patient patient) {
-        User user = patient.getUser();
-        setRole(user);
-        user.setPatient(patient);
-        userRepository.save(user);
+        patient.setStatus(Status.ENABLED);
         addressRepository.save(patient.getAddress());
         return PatientMapperDto.builder().setPatient(patientRepository.save(patient)).build();
     }
@@ -101,7 +96,7 @@ public class PatientServiceImpl implements PatientService {
             newPatient.setName(patient.getName());
             newPatient.setLastname(patient.getLastname());
             newPatient.setDni(patient.getDni());
-            newPatient.setPhone(patient.getPhone());
+            newPatient.setPhone(patient.getPhone());            
             setAtributtes(id, patient, newPatient);
             return Optional.of(PatientMapperDto.builder().setPatient(patientRepository.save(newPatient)).build());
         }

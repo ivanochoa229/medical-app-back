@@ -78,11 +78,11 @@ public class UserServiceImpl implements UserService{
         Optional<User> optionalUser = userRepository.findById(id);
         if(optionalUser.isPresent()){
             User user = optionalUser.get();
-            if(user.getPatient() != null || user.getDoc() != null){
-                return optionalUser;
-            }else{
-                userRepository.delete(user);
-            }
+            // if(user.getPatient() != null || user.getDoc() != null){
+            //     return optionalUser;
+            // }else{
+            //     userRepository.delete(user);
+            // }
         }
         return optionalUser;
     }
@@ -94,17 +94,17 @@ public class UserServiceImpl implements UserService{
         List<Role> roles = new ArrayList<>();
         if(optionalUser.isPresent()){
             User updatedUser = optionalUser.get();
-            if(updatedUser.getDoc() != null){
-                Optional<Role> optionaRoleUser = roleRepository.findByName("ROLE_DOC");
-                optionaRoleUser.ifPresent(roles::add);
-                if(user.isAdmin()){
-                    Optional<Role> optionalRoleAdmin = roleRepository.findByName("ROLE_ADMIN");
-                    optionalRoleAdmin.ifPresent(roles::add);
-                }
-            }else{
-                Optional<Role> optionaRoleUser = roleRepository.findByName("ROLE_PAT");
-                optionaRoleUser.ifPresent(roles::add);
-            }
+            // if(updatedUser.getDoc() != null){
+            //     Optional<Role> optionaRoleUser = roleRepository.findByName("ROLE_DOC");
+            //     optionaRoleUser.ifPresent(roles::add);
+            //     if(user.isAdmin()){
+            //         Optional<Role> optionalRoleAdmin = roleRepository.findByName("ROLE_ADMIN");
+            //         optionalRoleAdmin.ifPresent(roles::add);
+            //     }
+            // }else{
+            //     Optional<Role> optionaRoleUser = roleRepository.findByName("ROLE_PAT");
+            //     optionaRoleUser.ifPresent(roles::add);
+            // }
             updatedUser.setUsername(user.getUsername());
             updatedUser.setRoles(roles);
             updatedUser.setEmail(user.getEmail());

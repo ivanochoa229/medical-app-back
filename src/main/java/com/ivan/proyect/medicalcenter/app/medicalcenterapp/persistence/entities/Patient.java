@@ -60,11 +60,11 @@ public class Patient extends Person{
 
     public void addUser(User user){
         this.setUser(user);
-        user.setPatient(this);
+       
     }
 
     public void removeUser(){
-        user.setPatient(null);
+        
         this.setUser(null);
     }
 

@@ -5,8 +5,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.ivan.proyect.medicalcenter.app.medicalcenterapp.persistence.util.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,22 +69,34 @@ public class DoctorServiceImpl implements DoctorService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public Page<DoctorDto> findAll(Pageable pageable) {
+        Page<Doctor> doctorPage = doctorRepository.findAll(pageable);
+
+        List<DoctorDto> doctorDtoList = doctorPage.getContent().stream()
+                .map(doctor -> DoctorMapperDto.builder().setDoctor(doctor).build())
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(doctorDtoList, pageable, doctorPage.getTotalElements());
+    }
+
     @SuppressWarnings("null")
     @Transactional
     @Override
     public DoctorDto save(Doctor doctor) {
         User user = doctor.getUser();
-        setRole(user);
-        user.setDoc(doctor);
-        userRepository.save(user);
+        //setRole(user);
+        //user.setDoc(doctor);
+        //userRepository.save(user);
         days(doctor);
-        if (doctor.getConsultoringRoom() != null && doctor.getConsultoringRoom().getId() != null) {
-            ConsultoringRoom existingConsultoringRoom = roomRepository.findById(doctor.getConsultoringRoom().getId())
-                    .orElseThrow(() -> new EntityNotFoundException(
-                            "Room not found with ID: " + doctor.getConsultoringRoom().getId()));
-            existingConsultoringRoom.setDoctor(doctor);
-            doctor.addConsultoringRoom(existingConsultoringRoom);
-        }
+        doctor.setStatus(Status.ENABLED);
+//        if (doctor.getConsultoringRoom() != null && doctor.getConsultoringRoom().getId() != null) {
+//            ConsultoringRoom existingConsultoringRoom = roomRepository.findById(doctor.getConsultoringRoom().getId())
+//                    .orElseThrow(() -> new EntityNotFoundException(
+//                            "Room not found with ID: " + doctor.getConsultoringRoom().getId()));
+//            existingConsultoringRoom.setDoctor(doctor);
+//            doctor.addConsultoringRoom(existingConsultoringRoom);
+//        }
         return DoctorMapperDto.builder().setDoctor(doctorRepository.save(doctor)).build();
     }
 
@@ -138,6 +154,11 @@ public class DoctorServiceImpl implements DoctorService {
         }
 
         return Optional.empty();
+    }
+
+    @Override
+    public DoctorDto disableById(Long id) {
+        return null;
     }
 
     public User setRole(User user) {

@@ -3,7 +3,11 @@ package com.ivan.proyect.medicalcenter.app.medicalcenterapp.services.Impl;
 import java.util.List;
 import java.util.Optional;
 
+import com.ivan.proyect.medicalcenter.app.medicalcenterapp.exception.ObjectNotFoundException;
+import com.ivan.proyect.medicalcenter.app.medicalcenterapp.persistence.util.Status;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +33,7 @@ public class ScheduleServiceImpl implements ScheduleService{
     @Override
     @Transactional
     public Schedule save(Schedule schedule) {
+        schedule.setStatus(Status.ENABLED);
         return scheduleRepository.save(schedule);
     }
 
@@ -65,6 +70,19 @@ public class ScheduleServiceImpl implements ScheduleService{
             return optionalSchedule;
         }
         return null;
+    }
+    @Transactional(readOnly = true)
+    @Override
+    public Page<Schedule> findAll(Pageable pageable) {
+        return scheduleRepository.findAll(pageable);
+    }
+
+    @Override
+    public Schedule disableById(Long id) {
+        Schedule scheduleDB = scheduleRepository.findById(id).orElseThrow(
+                () -> new ObjectNotFoundException("Schedule not found with id " +id));
+        scheduleDB.setStatus(Status.DISABLED);
+        return scheduleRepository.save(scheduleDB);
     }
 
 }

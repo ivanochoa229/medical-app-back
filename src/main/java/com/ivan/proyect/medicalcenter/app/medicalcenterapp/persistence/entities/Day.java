@@ -9,6 +9,7 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import com.ivan.proyect.medicalcenter.app.medicalcenterapp.persistence.util.Status;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -50,6 +51,8 @@ public class Day {
 
     @OneToMany(mappedBy = "day", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private Set<Schedule> schedules = new HashSet<>();
+
+    private Status status;
 
     public Day() {
     }

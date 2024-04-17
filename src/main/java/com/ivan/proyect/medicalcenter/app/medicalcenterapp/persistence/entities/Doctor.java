@@ -43,20 +43,11 @@ public class Doctor extends Person{
     @Pattern(regexp = "\\d{1,2}:\\d{1,2}")
     private String end;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinTable(
-        name = "doctor_room",
-        joinColumns = @JoinColumn(name="doctor_id"),
-        inverseJoinColumns = @JoinColumn(name ="room_id")
-    )
+    @OneToOne
+    @JoinColumn(name = "room_id")
     private ConsultoringRoom consultoringRoom;
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    // @JoinTable(
-    //     name = "doctor_day",
-    //     joinColumns = @JoinColumn(name="doctor_id"),
-    //     inverseJoinColumns = @JoinColumn(name ="day_id")
-    // )
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     private Set<Day> days;
 
     @OneToOne
@@ -86,11 +77,9 @@ public class Doctor extends Person{
 
     public void addUser(User user){
         this.setUser(user);
-        user.setDoc(this);
     }
 
     public void removeUser(){
-        user.setDoc(null);
         this.setUser(null);
     }
 

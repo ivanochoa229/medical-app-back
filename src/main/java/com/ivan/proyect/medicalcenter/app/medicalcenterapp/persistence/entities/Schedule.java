@@ -2,6 +2,7 @@ package com.ivan.proyect.medicalcenter.app.medicalcenterapp.persistence.entities
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import com.ivan.proyect.medicalcenter.app.medicalcenterapp.persistence.util.Status;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -30,6 +31,8 @@ public class Schedule {
     @JsonIgnore
     @JoinColumn(name = "day_id")
     private Day day;
+
+    private Status status;
 
     public Schedule(){
         //days = new HashSet<>();

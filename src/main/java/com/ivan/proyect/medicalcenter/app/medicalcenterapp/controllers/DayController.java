@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -32,8 +34,13 @@ public class DayController {
     DayService dayService;
 
     @GetMapping
-    List<Day> findAll(){
-        return dayService.findAll();
+    public ResponseEntity<Page<Day>> findAll(Pageable pageable){
+        Page<Day> dayPage = dayService.findAll(pageable);
+        if(dayPage.hasContent()){
+            return ResponseEntity.ok(dayPage);
+        }else{
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/{id}")
@@ -66,6 +73,11 @@ public class DayController {
         }else{
             return ResponseEntity.notFound().build();
         }
+    }
+    @PutMapping("/{id}/disabled")
+    ResponseEntity<Day> disableById(@PathVariable Long id){
+        Day day = dayService.disableById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(day);
     }
 
     @DeleteMapping("/{id}")

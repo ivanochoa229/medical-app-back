@@ -3,11 +3,8 @@ package com.ivan.proyect.medicalcenter.app.medicalcenterapp.persistence.entities
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.ivan.proyect.medicalcenter.app.medicalcenterapp.persistence.entities.Doctor;
-import com.ivan.proyect.medicalcenter.app.medicalcenterapp.persistence.entities.Patient;
 import com.ivan.proyect.medicalcenter.app.medicalcenterapp.persistence.util.Role;
 
 import jakarta.persistence.Column;
@@ -18,8 +15,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import jakarta.persistence.UniqueConstraint;
@@ -48,23 +43,12 @@ public class User {
     @NotEmpty
     @Email
     private String email;
-    @JsonIgnore
-    @OneToOne
-    private Doctor doc;
-
-    @JsonIgnore
-    @OneToOne
-    @JoinColumn(name = "pacient_id")
-    private Patient patient;
-
+    
     @JsonIgnoreProperties({ "users", "handler", "hibernateLazyInitializer" })
     @ManyToMany
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"), uniqueConstraints = {
             @UniqueConstraint(columnNames = { "user_id", "role_id" }) })
     private List<Role> roles;
-
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private Boolean enabled;
 
     @Transient
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
@@ -90,10 +74,7 @@ public class User {
         this.email = email;
     }
 
-    @PrePersist
-    public void prePersist() {
-        enabled = true;
-    }
+
 
     @Override
     public int hashCode() {
